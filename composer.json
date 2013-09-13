@@ -1,0 +1,22 @@
+{
+    "name": "ciarand/cement",
+    "description": "A minimalistic CI server based on Concrete, written in PHP",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ciaran Downey",
+            "email": "me@ciarand.me"
+        }
+    ],
+    "require": {
+        "symfony/console": "*",
+        "symfony/filesystem": "2.3.4",
+        "cboden/Ratchet": "0.2.*",
+        "vlucas/phpdotenv": "1.0.2"
+    },
+    "autoload": {
+        "psr-0": {
+            "RestlessCo": "src/"
+        }
+    }
+}
