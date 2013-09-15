@@ -1,4 +1,4 @@
-#!/usr/local/bin/php
+#!/usr/bin/env php
 <?php
 
 if (!$loader = include __DIR__.'/vendor/autoload.php') {
