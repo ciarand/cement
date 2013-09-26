@@ -10,9 +10,8 @@
     ],
     "require": {
         "symfony/console": "*",
-        "symfony/filesystem": "2.3.4",
-        "cboden/Ratchet": "0.2.*",
-        "vlucas/phpdotenv": "1.0.2"
+        "symfony/filesystem": "~2.3.4",
+        "react/http": "~0"
     },
     "autoload": {
         "psr-0": {
