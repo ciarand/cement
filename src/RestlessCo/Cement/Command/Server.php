@@ -16,6 +16,7 @@ class Server extends Command
     protected $output;
     protected $config;
     protected $job;
+    protected $twig;
 
     protected function configure()
     {
@@ -65,43 +66,62 @@ class Server extends Command
         $this->input = $input;
         $this->output = $output;
         $this->config = new Configuration($input->getArgument('repo'));
-        $this->output->writeln("Starting server with runner command:");
-        $this->output->writeln($this->config['runner']);
+        $this->host = $this->input->getOption('host');
+        $this->baseDir = $this->input->getOption('basedir');
+        $this->port = $this->input->getOption('port');
         $this->job = new Job($this->config['runner']);
+
+        $this->twig = new \Twig_Environment(
+            new \Twig_Loader_Filesystem('views'),
+            array()
+        );
+    }
+
+    protected function startServer()
+    {
+        $loop = \React\EventLoop\Factory::create();
+        $socket = new \React\Socket\Server($loop);
+        $http = new \React\Http\Server($socket, $loop);
+
+        $http->on('request', $this->serveWebContent());
+        echo "Server running at http://127.0.0.1:{$this->port}\n";
+
+        $socket->listen($this->port);
+        $loop->run();
     }
 
     /**
      * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      */
-    protected function startServer()
+    protected function serveWebContent()
     {
-        $this->host = $this->input->getOption('host');
-        $this->baseDir = $this->input->getOption('basedir');
-        $this->port = $this->input->getOption('port');
+        return function ($request, $response) {
+            $response->writeHead(
+                // Set the status code
+                200,
+                // and content-type header
+                array('Content-Type' => 'text/html')
+            );
 
-        $app = function ($request, $response) {
-            // Set the status code
-            $response->writeHead(200, array('Content-Type' => 'text/plain'));
-            // Write that we're testing
-            $response->write("Beginning test...");
-            $this->job->run();
-            if (!$this->job->exitCode) {
-                $response->write("Success!" . PHP_EOL);
-            } else {
-                $response->write("Failure!" . PHP_EOL);
+            switch ($request->getPath()) {
+                case '/build':
+                    $this->job->run();
+                    $this->output->writeln("<info>Job completed</info>");
+                    // No break
+                default:
+                    $response->end($this->renderHtml());
             }
-            $response->end($this->job->getOutput());
-            $this->output->writeln("<info>Job completed</info>");
+
         };
+    }
 
-        $loop = \React\EventLoop\Factory::create();
-        $socket = new \React\Socket\Server($loop);
-        $http = new \React\Http\Server($socket, $loop);
-
-        $http->on('request', $app);
-        echo "Server running at http://127.0.0.1:{$this->port}\n";
-
-        $socket->listen($this->port);
-        $loop->run();
+    protected function renderHtml()
+    {
+        return $this->twig->render(
+            'index.twig',
+            array(
+                'job' => $this->job,
+            )
+        );
     }
 }

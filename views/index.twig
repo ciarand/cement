@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Cement CI Server</title>
+    </head>
+    <body>
+        <h1>The results of your build are:</h1>
+        {% if job.exitCode == 0 %}
+            Success! 
+        {% else %}
+            Failure!
+        {% endif %}
+    </body>
+</html>

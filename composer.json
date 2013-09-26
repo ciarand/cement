@@ -11,7 +11,8 @@
     "require": {
         "symfony/console": "*",
         "symfony/filesystem": "~2.3.4",
-        "react/http": "~0"
+        "react/http": "~0",
+        "twig/twig": "~1"
     },
     "autoload": {
         "psr-0": {
