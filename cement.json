@@ -1,0 +1,4 @@
+{
+    "runner": "composer install",
+    "branch": "master"
+}
