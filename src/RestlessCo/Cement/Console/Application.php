@@ -1,11 +1,13 @@
 <?php
-namespace RestlessCo\Cement\Core;
+
+namespace RestlessCo\Cement\Console;
 
 use Symfony\Component\Console\Input\InputInterface;
+use \Symfony\Component\Console\Application as SymfonyApplication;
+use RestlessCo\Cement\Console\Command\ServerCommand;
+use RestlessCo\Cement\Console\Command\BuildCommand;
 
-use RestlessCo\Cement\Command\Server;
-
-class Application extends \Symfony\Component\Console\Application
+class Application extends SymfonyApplication
 {
     /**
      * Gets the name of the command based on input.
@@ -13,11 +15,12 @@ class Application extends \Symfony\Component\Console\Application
      * @param InputInterface $input The input interface
      *
      * @return string The command name
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     protected function getCommandName(InputInterface $input)
     {
-        // This should return the name of your command.
-        return 'server';
+        // return 'server';
+        return parent::getCommandName($input);
     }
 
     /**
@@ -30,7 +33,8 @@ class Application extends \Symfony\Component\Console\Application
         // Keep the core default commands to have the HelpCommand
         // which is used when using the --help option
         $defaultCommands = parent::getDefaultCommands();
-        $defaultCommands[] = new Server();
+        $defaultCommands[] = new ServerCommand();
+        $defaultCommands[] = new BuildCommand();
         return $defaultCommands;
     }
 
@@ -42,7 +46,7 @@ class Application extends \Symfony\Component\Console\Application
     {
         $inputDefinition = parent::getDefinition();
         // clear out the normal first argument, which is the command name
-        $inputDefinition->setArguments();
+        // $inputDefinition->setArguments();
 
         return $inputDefinition;
     }

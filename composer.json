@@ -10,9 +10,10 @@
     ],
     "require": {
         "symfony/console": "*",
-        "symfony/filesystem": "~2.3.4",
+        "symfony/process": "~2.3.4",
         "react/http": "~0",
-        "twig/twig": "~1"
+        "twig/twig": "~1",
+        "dflydev/apache-mime-types": "~1"
     },
     "autoload": {
         "psr-0": {

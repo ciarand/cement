@@ -8,16 +8,38 @@ class Configuration implements \ArrayAccess
 
     public function __construct($dir)
     {
-        $this->config = json_decode(
-            file_get_contents($dir . '/cement.json'),
+        $defaults = [
+            'name' => basename($dir),
+            'hooks' => [],
+            'timeout' => 100,
+            'buildLocation' => $dir,
+        ];
+        $config = json_decode(
+            file_get_contents("$dir/cement.json"),
             true
         );
-        $this->requireConfigParameters(['runner', 'branch']);
+        $this->config = $config + $defaults;
+
+        $this->requireConfigParameters(
+            ['commands', 'name', 'buildLocation']
+        );
     }
 
-    protected function requireConfigParameters($params)
+    /**
+     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+     */
+    protected function requireConfigParameters(array $reqs)
     {
-        return empty(array_diff(array_flip($params), $this->config));
+        $missingReqs = array_diff(
+            $reqs,
+            array_keys($this->config)
+        );
+        if (!empty($missingReqs)) {
+            throw new \InvalidArgumentException(
+                "Missing:" . implode(PHP_EOL, $missingReqs),
+                1
+            );
+        }
     }
 
     // abstract public boolean offsetExists ( mixed $offset )
@@ -42,5 +64,10 @@ class Configuration implements \ArrayAccess
     public function offsetUnset($offset)
     {
         unset($this->config[$offset]);
+    }
+
+    public function toArray()
+    {
+        return $this->config;
     }
 }
