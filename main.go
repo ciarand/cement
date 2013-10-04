@@ -12,6 +12,8 @@ func main() {
 	switch strings.ToLower(flag.Arg(0)) {
 	case "build":
 		buildCommand()
+	case "init":
+		initCommand()
 	default:
 		helpCommand()
 	}
