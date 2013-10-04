@@ -1,18 +1,20 @@
 package main
 
 import (
+	"errors"
 	"log"
 	"os"
 )
 
-func buildCommand() {
+func buildCommand() (ret error) {
 	// Make an "exit code" channel
 	exit := make(chan bool, 1)
 
 	cwd, err := os.Getwd()
 	if err != nil {
-		log.Fatal("Could not get current directory: ", err.Error())
+		return errors.New("Could not get current directory: " + err.Error())
 	}
+
 	go Build{Cwd: cwd, ConfigFile: ".cement"}.start(exit)
 	if ret := <-exit; ret {
 		log.Println("Build succeeded.")
@@ -20,4 +22,6 @@ func buildCommand() {
 		log.Println("Build failed.")
 	}
 	close(exit)
+
+	return nil
 }

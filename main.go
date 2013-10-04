@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"strings"
 )
 
@@ -9,12 +10,17 @@ func main() {
 	// Here's where we'd define the flags to be used
 	flag.Parse()
 
+	var err error
 	switch strings.ToLower(flag.Arg(0)) {
 	case "build":
-		buildCommand()
+		err = buildCommand()
 	case "init":
-		initCommand()
+		err = initCommand()
 	default:
-		helpCommand()
+		err = helpCommand()
+	}
+
+	if err != nil {
+		fmt.Println(err)
 	}
 }
