@@ -1,3 +1,5 @@
+This project is deprecated and unmaintained. Proceed with caution!
+
 Cement
 ======
 **Cement** is a simple CI server inspired by [Concrete][] and written in PHP.
